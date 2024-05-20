@@ -1,11 +1,57 @@
+/**
+ * This class represents a point in a 2D coordinate system.
+ */
 public class Point {
-    // constructor
-    public Point(double x, double y) { }
-    // distance -- return the distance of this point to the other point
-    public double distance(Point other) { }
-    // equals -- return true is the points are equal, false otherwise
-    public boolean equals(Point other) { }
-    // Return the x and y values of this point
-    public double getX() { }
-    public double getY() { }
+    private double x;
+    private double y;
+
+    /**
+     * Constructs a Point object with specified x and y coordinates.
+     *
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     */
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Calculates the distance between this point and another point.
+     *
+     * @param other The other point to which the distance is calculated.
+     * @return The distance between this point and the other point.
+     */
+    public double distance(Point other) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
+    /**
+     * Checks if this point is equal to another point.
+     * Two points are considered equal if their x and y coordinates are the same.
+     *
+     * @param other The other point to compare with.
+     * @return true if the points are equal, false otherwise.
+     */
+    public boolean equals(Point other) {
+        return this.x == other.x && this.y == other.y;
+    }
+
+    /**
+     * Gets the x-coordinate of this point.
+     *
+     * @return The x-coordinate of this point.
+     */
+    public double getX() {
+        return this.x;
+    }
+
+    /**
+     * Gets the y-coordinate of this point.
+     *
+     * @return The y-coordinate of this point.
+     */
+    public double getY() {
+        return this.y;
+    }
 }
