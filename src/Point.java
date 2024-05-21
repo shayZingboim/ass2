@@ -4,6 +4,7 @@
 public class Point {
     private double x;
     private double y;
+    public static final double EPSILON = 0.00001;
 
     /**
      * Constructs a Point object with specified x and y coordinates.
@@ -54,4 +55,6 @@ public class Point {
     public double getY() {
         return this.y;
     }
+
+
 }
