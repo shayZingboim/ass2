@@ -4,7 +4,7 @@
 public class Point {
     private double x;
     private double y;
-    public static final double EPSILON = 0.00001;
+    public static final double EPSILON = 0.000001;
 
     /**
      * Constructs a Point object with specified x and y coordinates.
@@ -35,7 +35,7 @@ public class Point {
      * @return true if the points are equal, false otherwise.
      */
     public boolean equals(Point other) {
-        return this.x == other.x && this.y == other.y;
+        return Math.abs(this.x - other.x) < EPSILON && Math.abs(this.y - other.y) < EPSILON;
     }
 
     /**
