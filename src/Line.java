@@ -113,7 +113,10 @@ public class Line {
 
     // Returns true if this 2 lines intersect with this line, false otherwise
     public boolean isIntersecting(Line other1, Line other2) {
-        return other1.isIntersecting(other2);
+        if (this.isIntersecting(other1) && this.isIntersecting(other2)) {
+            return true;
+        }
+        return false;
     }
 
     // Returns the intersection point if the lines intersect and null otherwise.
