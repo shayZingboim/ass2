@@ -2,7 +2,7 @@ public class Line {
     private Point start;
     private Point end;
     private Point inPoint = null;
-    public static final double EPSILON = 0.000001;
+    public static final double EPSILON = 0.00000001;
 
     // constructors
     public Line(Point start, Point end) {
@@ -155,6 +155,7 @@ public class Line {
                 }
                 return true;
             }
+            return false;
         }
         xIntersection = (n2 - n1) / (slope1 - slope2);
         yIntersection = xIntersection * slope1 + n1;
@@ -183,9 +184,11 @@ public class Line {
     // Returns the intersection point if the lines intersect and null otherwise.
     public Point intersectionWith(Line other) {
         if (this.isIntersecting(other)) {
-            Point intersection = new Point(this.getInPoint().getX(), this.getInPoint().getY());
-            this.inPoint = null;
-            return intersection;
+            if (this.getInPoint() != null) {
+                Point intersection = new Point(this.getInPoint().getX(), this.getInPoint().getY());
+                this.inPoint = null;
+                return intersection;
+            }
         }
         return null;
     }

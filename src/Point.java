@@ -4,7 +4,7 @@
 public class Point {
     private double x;
     private double y;
-    public static final double EPSILON = 0.000001;
+    public static final double EPSILON = 0.00000001;
 
     /**
      * Constructs a Point object with specified x and y coordinates.
