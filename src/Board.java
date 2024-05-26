@@ -1,8 +1,8 @@
 public class Board {
     public static int getHeightBoard() {
-        return 600;
+        return 650;
     }
     public static int getWidthBoard() {
-        return 600;
+        return 650;
     }
 }
