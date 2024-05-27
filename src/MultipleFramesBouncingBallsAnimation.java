@@ -13,7 +13,7 @@ public class MultipleFramesBouncingBallsAnimation {
     /**
      * The main method to start the animation.
      *
-     * @param args the command line arguments: the radii of the balls.
+     * @param args the command line arguments: the radius of the balls.
      */
     public static void main(String[] args) {
         Ball[] balls = new Ball[args.length];
@@ -21,7 +21,7 @@ public class MultipleFramesBouncingBallsAnimation {
         int halfBall = args.length / 2;
         Random rand = new Random();
 
-        // Create balls with specified radii
+        // Create balls with specified radius
         for (int i = 0; i < args.length; i++) {
             try {
                 num = Integer.parseInt(args[i]);
@@ -36,9 +36,9 @@ public class MultipleFramesBouncingBallsAnimation {
                 return;
             }
 
-            // Place balls in different frames
+            // Place the first half of balls in the grey rectangle.
             if (i <= (halfBall - 1)) {
-                // Ensure balls are placed within the left frame
+                // Ensure balls are placed within the grey rectangle.
                 do {
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - num - 50) + (num + 50),
                             rand.nextDouble(500 - num - 50) + (num + 50)), num, Color.BLACK);
@@ -46,7 +46,7 @@ public class MultipleFramesBouncingBallsAnimation {
                     balls[i].setVelocity(vel);
                 } while (balls[i].getX() + num > 450 && balls[i].getY() + num > 450);
             } else {
-                // Ensure balls are placed within the right frame
+                // Ensure balls are placed outside the rectangles.
                 do {
                     balls[i] = new Ball(new Point(rand.nextDouble(Board.getWidthBoard() - 2 * num) + num,
                             rand.nextDouble(Board.getHeightBoard() - 2 * num) + num), num, Color.BLACK);
@@ -59,7 +59,7 @@ public class MultipleFramesBouncingBallsAnimation {
             }
         }
 
-        // Draw and animate the balls within frames
+        // Draw and animate the balls within frames.
         drawBalls(balls);
     }
 
@@ -72,24 +72,24 @@ public class MultipleFramesBouncingBallsAnimation {
         GUI gui = new GUI("Bouncing Frame Balls", Board.getWidthBoard(), Board.getHeightBoard());
         Sleeper sleeper = new Sleeper();
 
-        // Animation loop
+        // Animation loop.
         while (true) {
             DrawSurface d = gui.getDrawSurface();
 
-            // Draw frame rectangles
+            // Draw frame rectangles.
             Rectangle.drawRectangle(d, 50, 50, 450, 450, Color.GRAY);
             Rectangle.drawRectangle(d, 450, 450, 150, 150, Color.YELLOW);
 
-            // Move and draw each ball
+            // Move and draw each ball.
             for (Ball ball : balls) {
                 ball.moveOneStep();
                 ball.drawOn(d);
             }
 
-            // Show the surface on the GUI
+            // Show the surface on the GUI.
             gui.show(d);
 
-            // Pause for 50 milliseconds before the next iteration
+            // Pause for 50 milliseconds before the next iteration.
             sleeper.sleepFor(50);
         }
     }

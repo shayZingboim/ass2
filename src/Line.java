@@ -4,7 +4,7 @@
 public class Line {
     private Point start; // Starting point of the line
     private Point end; // Ending point of the line
-    private Point inPoint = null; // Intersection point with another line, if any
+    private Point inPoint = null; // Intersection point with another line, if exist 1 (more than 1 will be null).
     public static final double EPSILON = 0.00000001; // Small constant to handle floating-point comparison
 
     /**
@@ -68,7 +68,7 @@ public class Line {
     }
 
     /**
-     * Returns the intersection point of this line with another line, if any.
+     * Returns the intersection point of this line with another line, if there is, else return null.
      *
      * @return The intersection point, or null if there is no intersection.
      */
@@ -120,15 +120,15 @@ public class Line {
             }
             return true; // The vertical lines overlap
         }
-        // Case 3: This line is vertical
+        // Case 3: This line is vertical and the other not.
         if (this.end.getX() == this.start.getX()) {
-            // Calculate the slope and y-intercept of the other line
+            // Calculate the slope and y-intercept of the other line.
             slope2 = (other.end.getY() - other.start.getY()) / (other.end.getX() - other.start.getX());
             n2 = other.start.getY() - slope2 * other.start.getX();
-            // Calculate the intersection point
+            // Calculate the intersection point.
             xIntersection = this.start.getX();
             yIntersection = slope2 * xIntersection + n2;
-            // Check if the intersection point lies within both line segments
+            // Check if the intersection point is within both line segments.
             if ((xIntersection <= Math.max(other.start.getX(), other.end.getX()))
                     && (xIntersection >= Math.min(other.start.getX(), other.end.getX()))
                     && (yIntersection <= Math.max(this.start.getY(), this.end.getY()))
@@ -140,7 +140,7 @@ public class Line {
             }
             return false; // Intersection point is outside the line segments
         }
-        // Case 4: Other line is vertical
+        // Case 4: Other line is vertical and this not.
         if (other.end.getX() == other.start.getX()) {
             // Calculate the slope and y-intercept of this line
             slope1 = (this.end.getY() - this.start.getY()) / (this.end.getX() - this.start.getX());
@@ -158,9 +158,9 @@ public class Line {
                 this.inPoint = new Point(xIntersection, yIntersection);
                 return true;
             }
-            return false; // Intersection point is outside the line segments
+            return false; // Intersection point is outside the line segments.
         }
-        // Case 5: Calculate the slopes of both lines (handle horizontal lines)
+        // Calculate the slopes of both lines (handle horizontal lines) for the other cases.
         if (this.end.getY() == this.start.getY()) {
             slope1 = 0; // Horizontal line
         } else {
@@ -174,12 +174,12 @@ public class Line {
         // Calculate the y-intercepts of both lines
         n1 = this.start.getY() - slope1 * this.start.getX();
         n2 = other.start.getY() - slope2 * other.start.getX();
-        // Case 6: Lines are parallel but not coincident
+        // Case 5: Lines are parallel but not coincident
         if (slope1 == slope2) {
             if (n1 != n2) {
-                return false; // Parallel lines with different y-intercepts do not intersect
+                return false; // Parallel lines with different y-intercepts do not intersect.
             }
-            // Case 7: Lines are coincident (overlapping)
+            // Case 6: Lines are coincident (overlapping)
             if (((this.start.getX() <= Math.max(other.start.getX(), other.end.getX())
                     && this.start.getX() >= Math.min(other.start.getX(), other.end.getX()))
                     || (this.end.getX() <= Math.max(other.start.getX(), other.end.getX())
@@ -208,15 +208,15 @@ public class Line {
                         this.inPoint = new Point(other.end.getX(), other.end.getY());
                     }
                 }
-                return true; // The lines are coincident and overlap
+                return true; // The lines are coincident and overlap.
             }
-            return false; // The lines are parallel but do not overlap
+            return false; // The lines are parallel but do not overlap.
         }
-        // Case 8: General case where lines may intersect
-        // Calculate the intersection point
+        // Case 7: General case where lines may intersect.
+        // Calculate the intersection point.
         xIntersection = (n2 - n1) / (slope1 - slope2);
         yIntersection = slope1 * xIntersection + n1;
-        // Check if the intersection point lies within both line segments
+        // Check if the intersection point lies within both line segments.
         if ((xIntersection <= Math.max(this.start.getX(), this.end.getX()))
                 && (xIntersection >= Math.min(this.start.getX(), this.end.getX()))
                 && (yIntersection <= Math.max(this.start.getY(), this.end.getY()))
@@ -228,7 +228,7 @@ public class Line {
             this.inPoint = new Point(xIntersection, yIntersection);
             return true;
         }
-        return false; // Intersection point is outside the line segments
+        return false; // Intersection point is outside the line segments.
     }
 
     /**

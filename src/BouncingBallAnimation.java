@@ -20,7 +20,7 @@ public class BouncingBallAnimation {
             newArgs[i] = Integer.parseInt(args[i]);
         }
 
-        // Check if the ball's initial position is within the valid range
+        // Check if the ball's initial position is within the valid range.
         if (newArgs[0] - 30 < 0 || newArgs[0] + 30 > Board.getWidthBoard()
                 || newArgs[1] - 30 < 0 || newArgs[1] + 30 > Board.getHeightBoard()) {
             System.out.println("Invalid arguments");
