@@ -10,6 +10,7 @@ public class Rectangle {
     private int y;       // The y-coordinate of the top-left corner of the rectangle
     private int width;   // The width of the rectangle
     private int height;  // The height of the rectangle
+    private Color color;
 
     /**
      * Constructor to create a new rectangle with specified position, width, and height.
@@ -18,25 +19,22 @@ public class Rectangle {
      * @param y      the y-coordinate of the top-left corner.
      * @param width  the width of the rectangle.
      * @param height the height of the rectangle.
+     * @param color  the color of the rectangle.
      */
-    public Rectangle(int x, int y, int width, int height) {
+    public Rectangle(int x, int y, int width, int height, Color color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.color = color;
     }
 
     /**
      * Draws a rectangle on the given DrawSurface with specified position, width, height, and color.
      *
      * @param d      the DrawSurface to draw on.
-     * @param x      the x-coordinate of the top-left corner.
-     * @param y      the y-coordinate of the top-left corner.
-     * @param width  the width of the rectangle.
-     * @param height the height of the rectangle.
-     * @param color  the color of the rectangle.
      */
-    public static void drawRectangle(DrawSurface d, int x, int y, int width, int height, Color color) {
+    public void drawRectangle(DrawSurface d) {
         d.setColor(color);                           // Set the drawing color to the specified color
         d.fillRectangle(x, y, width, height);        // Draw the filled rectangle on the DrawSurface
     }

@@ -4,7 +4,7 @@
 public class Line {
     private Point start; // Starting point of the line
     private Point end; // Ending point of the line
-    private Point inPoint = null; // Intersection point with another line, if exist 1 (more than 1 will be null).
+    private Point inPoint = null; // Intersection point with another line, if any
     public static final double EPSILON = 0.00000001; // Small constant to handle floating-point comparison
 
     /**
@@ -14,8 +14,21 @@ public class Line {
      * @param end   The ending point of the line.
      */
     public Line(Point start, Point end) {
-        this.start = start;
-        this.end = end;
+        if (start.getX() == end.getX()) {
+            if (start.getY() < end.getY()) {
+                this.start = start;
+                this.end = end;
+            } else {
+                this.start = end;
+                this.end = start;
+            }
+        } else if (start.getX() < end.getX()) {
+            this.start = start;
+            this.end = end;
+        } else {
+            this.start = end;
+            this.end = start;
+        }
     }
 
     /**
@@ -27,8 +40,7 @@ public class Line {
      * @param y2 The y-coordinate of the ending point.
      */
     public Line(double x1, double y1, double x2, double y2) {
-        this.start = new Point(x1, y1);
-        this.end = new Point(x2, y2);
+        this(new Point(x1, y1), new Point(x2, y2));
     }
 
     /**
@@ -68,12 +80,27 @@ public class Line {
     }
 
     /**
-     * Returns the intersection point of this line with another line, if there is, else return null.
+     * Returns the intersection point of this line with another line, if any.
      *
      * @return The intersection point, or null if there is no intersection.
      */
     public Point getInPoint() {
         return this.inPoint;
+    }
+
+    public double getSlope(Line line) {
+        double slope;
+        if (Math.abs(line.start.getX() - line.end.getX()) <= EPSILON) {
+            slope = Double.POSITIVE_INFINITY;
+        } else {
+            slope = (line.end.getY() - line.start.getY()) / (line.end.getX() - line.start.getX());
+        }
+        return slope;
+    }
+
+    public double getB(Line line, double slope) {
+        double b = (line.start.getY() - (slope * line.start.getX()));
+        return b;
     }
 
     /**
@@ -83,152 +110,134 @@ public class Line {
      * @return True if the lines intersect, false otherwise.
      */
     public boolean isIntersecting(Line other) {
-        double slope1, slope2, n1, n2, xIntersection, yIntersection;
-        // Case 1: Both lines are vertical but not overlapping
-        if (this.end.getX() == this.start.getX() && other.end.getX() == other.start.getX()
-                && this.start.getX() != other.start.getX()) {
-            return false; // Parallel vertical lines with different x-coordinates do not intersect
-        }
-        // Case 2: Both lines are vertical and possibly overlapping
-        if (this.end.getX() == this.start.getX() && other.end.getX() == other.start.getX()) {
-            // Check if the y-ranges of the vertical lines overlap
-            if ((Math.min(this.start.getY(), this.end.getY()) > Math.max(other.start.getY(), other.end.getY()))
-                    || (Math.min(other.start.getY(), other.end.getY())
-                    > Math.max(this.start.getY(), this.end.getY()))) {
-                return false; // The vertical lines do not overlap in the y-axis
-            }
-            // Handle overlapping vertical lines and set the intersection point
-            if (((Math.abs(Math.max(this.start.getY(), this.end.getY()))
-                    - (Math.min(other.start.getY(), other.end.getY()))) <= EPSILON)
-                    && !((Math.abs(Math.max(other.start.getY(), other.end.getY()))
-                    - (Math.min(this.start.getY(), this.end.getY()))) <= EPSILON)) {
-                if (this.start.getY() >= this.end.getY()) {
-                    this.inPoint = new Point(this.start.getX(), this.start.getY());
-                } else {
-                    this.inPoint = new Point(this.end.getX(), this.end.getY());
-                }
-            }
-            if (!((Math.abs(Math.max(this.start.getY(), this.end.getY()))
-                    - (Math.min(other.start.getY(), other.end.getY()))) <= EPSILON)
-                    && ((Math.abs(Math.max(other.start.getY(), other.end.getY()))
-                    - (Math.min(this.start.getY(), this.end.getY()))) <= EPSILON)) {
-                if (other.start.getY() >= other.end.getY()) {
-                    this.inPoint = new Point(other.start.getX(), other.start.getY());
-                } else {
-                    this.inPoint = new Point(other.end.getX(), other.end.getY());
-                }
-            }
-            return true; // The vertical lines overlap
-        }
-        // Case 3: This line is vertical and the other not.
-        if (this.end.getX() == this.start.getX()) {
-            // Calculate the slope and y-intercept of the other line.
-            slope2 = (other.end.getY() - other.start.getY()) / (other.end.getX() - other.start.getX());
-            n2 = other.start.getY() - slope2 * other.start.getX();
-            // Calculate the intersection point.
-            xIntersection = this.start.getX();
-            yIntersection = slope2 * xIntersection + n2;
-            // Check if the intersection point is within both line segments.
-            if ((xIntersection <= Math.max(other.start.getX(), other.end.getX()))
-                    && (xIntersection >= Math.min(other.start.getX(), other.end.getX()))
-                    && (yIntersection <= Math.max(this.start.getY(), this.end.getY()))
-                    && (yIntersection <= Math.max(other.start.getY(), other.end.getY()))
-                    && (yIntersection >= Math.min(this.start.getY(), this.end.getY()))
-                    && (yIntersection >= Math.min(other.start.getY(), other.end.getY()))) {
-                this.inPoint = new Point(xIntersection, yIntersection);
+        double slope1 = getSlope(this);
+        double slope2 = getSlope(other);
+        double b1 = getB(this, slope1);
+        double b2 = getB(other, slope2);
+        double xIntersection = '\0';
+        double yIntersection = '\0';
+
+        //Case 1: where the two lines are points.
+        if (this.start.equals(this.end) && other.start.equals(other.end)) {
+            if (this.start.equals(other.start)) {
+                this.inPoint = this.start;
                 return true;
             }
-            return false; // Intersection point is outside the line segments
+            return false;
         }
-        // Case 4: Other line is vertical and this not.
-        if (other.end.getX() == other.start.getX()) {
-            // Calculate the slope and y-intercept of this line
-            slope1 = (this.end.getY() - this.start.getY()) / (this.end.getX() - this.start.getX());
-            n1 = this.start.getY() - slope1 * this.start.getX();
-            // Calculate the intersection point
-            xIntersection = other.start.getX();
-            yIntersection = slope1 * xIntersection + n1;
-            // Check if the intersection point lies within both line segments
-            if (xIntersection <= Math.max(this.start.getX(), this.end.getX())
-                    && (xIntersection >= Math.min(this.start.getX(), this.end.getX()))
-                    && (yIntersection <= Math.max(this.start.getY(), this.end.getY()))
-                    && (yIntersection <= Math.max(other.start.getY(), other.end.getY()))
-                    && (yIntersection >= Math.min(this.start.getY(), this.end.getY()))
-                    && (yIntersection >= Math.min(other.start.getY(), other.end.getY()))) {
-                this.inPoint = new Point(xIntersection, yIntersection);
+        //Case 2: this line is a point.
+        if (this.start.equals(this.end)) {
+            if (slope2 == Double.POSITIVE_INFINITY) {
+                if (Math.abs(this.start.getX() - other.start.getX()) > EPSILON
+                        || this.start.getY() - EPSILON > other.end.getY()
+                        || this.start.getY() + EPSILON < other.start.getY()) {
+                    return false;
+                }
+                this.inPoint = this.start;
                 return true;
             }
-            return false; // Intersection point is outside the line segments.
-        }
-        // Calculate the slopes of both lines (handle horizontal lines) for the other cases.
-        if (this.end.getY() == this.start.getY()) {
-            slope1 = 0; // Horizontal line
-        } else {
-            slope1 = (this.end.getY() - this.start.getY()) / (this.end.getX() - this.start.getX());
-        }
-        if (other.end.getY() == other.start.getY()) {
-            slope2 = 0; // Horizontal line
-        } else {
-            slope2 = (other.end.getY() - other.start.getY()) / (other.end.getX() - other.start.getX());
-        }
-        // Calculate the y-intercepts of both lines
-        n1 = this.start.getY() - slope1 * this.start.getX();
-        n2 = other.start.getY() - slope2 * other.start.getX();
-        // Case 5: Lines are parallel but not coincident
-        if (slope1 == slope2) {
-            if (n1 != n2) {
-                return false; // Parallel lines with different y-intercepts do not intersect.
-            }
-            // Case 6: Lines are coincident (overlapping)
-            if (((this.start.getX() <= Math.max(other.start.getX(), other.end.getX())
-                    && this.start.getX() >= Math.min(other.start.getX(), other.end.getX()))
-                    || (this.end.getX() <= Math.max(other.start.getX(), other.end.getX())
-                    && this.end.getX() >= Math.min(other.start.getX(), other.end.getX())))
-                    || (((other.start.getX() <= Math.max(this.start.getX(), this.end.getX()))
-                    && other.start.getX() >= Math.min(this.start.getX(), this.end.getX()))
-                    || (other.end.getX() <= Math.max(this.start.getX(), this.end.getX())
-                    && other.end.getX() >= Math.min(this.start.getX(), this.end.getX())))) {
-                if (((Math.abs(Math.max(this.start.getX(), this.end.getX()))
-                        - (Math.min(other.start.getX(), other.end.getX()))) <= EPSILON)
-                        && !((Math.abs(Math.max(other.start.getX(), other.end.getX()))
-                        - (Math.min(this.start.getX(), this.end.getX()))) <= EPSILON)) {
-                    if (this.start.getX() >= this.end.getX()) {
-                        this.inPoint = new Point(this.start.getX(), this.start.getY());
-                    } else {
-                        this.inPoint = new Point(this.end.getX(), this.end.getY());
-                    }
+            if (Math.abs(this.start.getY() - (slope2 * this.start.getX() + b2)) < EPSILON) {
+                if (this.end.getX() + EPSILON < other.start.getX() || this.start.getX() - EPSILON > other.end.getX()) {
+                    return false;
                 }
-                if (!((Math.abs(Math.max(this.start.getX(), this.end.getX()))
-                        - (Math.min(other.start.getX(), other.end.getX()))) <= EPSILON)
-                        && ((Math.abs(Math.max(other.start.getX(), other.end.getX()))
-                        - (Math.min(this.start.getX(), this.end.getX()))) <= EPSILON)) {
-                    if (other.start.getX() >= other.end.getX()) {
-                        this.inPoint = new Point(other.start.getX(), other.start.getY());
-                    } else {
-                        this.inPoint = new Point(other.end.getX(), other.end.getY());
-                    }
-                }
-                return true; // The lines are coincident and overlap.
+                this.inPoint = this.start;
+                return true;
             }
-            return false; // The lines are parallel but do not overlap.
+            return false;
         }
-        // Case 7: General case where lines may intersect.
-        // Calculate the intersection point.
-        xIntersection = (n2 - n1) / (slope1 - slope2);
-        yIntersection = slope1 * xIntersection + n1;
-        // Check if the intersection point lies within both line segments.
-        if ((xIntersection <= Math.max(this.start.getX(), this.end.getX()))
-                && (xIntersection >= Math.min(this.start.getX(), this.end.getX()))
-                && (yIntersection <= Math.max(this.start.getY(), this.end.getY()))
-                && (yIntersection >= Math.min(this.start.getY(), this.end.getY()))
-                && (xIntersection <= Math.max(other.start.getX(), other.end.getX()))
-                && (xIntersection >= Math.min(other.start.getX(), other.end.getX()))
-                && (yIntersection <= Math.max(other.start.getY(), other.end.getY()))
-                && (yIntersection >= Math.min(other.start.getY(), other.end.getY()))) {
-            this.inPoint = new Point(xIntersection, yIntersection);
+        //Case 3: other line is a point.
+        if (other.start.equals(other.end)) {
+            if (slope1 == Double.POSITIVE_INFINITY) {
+                if (Math.abs(other.start.getX() - this.start.getX()) > EPSILON
+                        || other.start.getY() - EPSILON > this.end.getY()
+                        || other.start.getY() + EPSILON < this.start.getY()) {
+                    return false;
+                }
+                this.inPoint = other.start;
+                return true;
+            }
+            if (Math.abs(other.start.getY() - (slope1 * other.start.getX() + b1)) < EPSILON) {
+                if (other.end.getX() + EPSILON < this.start.getX() || other.start.getX() - EPSILON > this.end.getX()) {
+                    return false;
+                }
+                this.inPoint = other.start;
+                return true;
+            }
+            return false;
+        }
+        //Case 4: both lines are vertical.
+        if (slope1 == Double.POSITIVE_INFINITY && slope2 == Double.POSITIVE_INFINITY) {
+            if (Math.abs(this.start.getX() - other.end.getX()) > EPSILON) {
+                return false;
+            }
+            if (this.end.getY() + EPSILON < other.start.getY() || this.start.getY() - EPSILON > other.end.getY()) {
+                return false;
+            }
+            if (Math.abs(this.start.getY() - other.end.getY()) < EPSILON) {
+                this.inPoint = this.start;
+            }
+            if (Math.abs(this.end.getY() - other.start.getY()) < EPSILON) {
+                this.inPoint = this.end;
+            }
             return true;
         }
-        return false; // Intersection point is outside the line segments.
+        //Case 5: this line is vertical.
+        if (slope1 == Double.POSITIVE_INFINITY) {
+            if (this.start.getX() + EPSILON < other.start.getX() || this.start.getX() - EPSILON > other.end.getX()) {
+                return false;
+            }
+            yIntersection = slope2 * this.start.getX() + b2;
+            if (yIntersection - EPSILON > this.end.getY() || yIntersection + EPSILON < this.start.getY()) {
+                return false;
+            }
+            this.inPoint = new Point(this.start.getX(), yIntersection);
+            return true;
+        }
+        //Case 6: other line is vertical.
+        if (slope2 == Double.POSITIVE_INFINITY) {
+            if (other.start.getX() - EPSILON > this.end.getX() || other.start.getX() + EPSILON < this.start.getX()) {
+                return false;
+            }
+            yIntersection = slope1 * other.start.getX() + b1;
+            if (yIntersection - EPSILON > other.end.getY() || yIntersection + EPSILON < other.start.getY()) {
+                return false;
+            }
+            this.inPoint = new Point(other.start.getX(), yIntersection);
+            return true;
+        }
+        //Case 7: the lines are parallel to each other.
+        if (Math.abs(slope1 - slope2) < EPSILON) {
+            if (Math.abs(b1 - b2) > EPSILON) {
+                return false;
+            }
+            if (this.start.getX() - EPSILON > other.end.getX() || this.end.getX() + EPSILON < other.start.getX()) {
+                return false;
+            }
+            if (Math.abs(this.start.getX() - other.end.getX()) < EPSILON) {
+                this.inPoint = this.start;
+                return true;
+            }
+            if (Math.abs(this.end.getX() - other.start.getX()) < EPSILON) {
+                this.inPoint = this.end;
+                return true;
+            }
+            return true;
+        }
+        //Case 8: common case.
+        xIntersection = (b2 - b1) / (slope1 - slope2);
+        yIntersection = slope1 * xIntersection + b1;
+        if (xIntersection + EPSILON < this.start.getX() || xIntersection - EPSILON > this.end.getX()
+                || yIntersection - EPSILON > Math.max(this.start.getY(), this.end.getY())
+                || yIntersection + EPSILON < Math.min(this.start.getY(), this.end.getY())
+                || xIntersection + EPSILON < other.start.getX() || xIntersection - EPSILON > other.end.getX()
+                || yIntersection - EPSILON > Math.max(other.start.getY(), other.end.getY())
+                || yIntersection + EPSILON < Math.min(other.start.getY(), other.end.getY())) {
+            return false;
+        }
+        this.inPoint = new
+
+                Point(xIntersection, yIntersection);
+        return true;
     }
 
     /**

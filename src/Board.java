@@ -2,13 +2,14 @@
  * Represents the dimensions of a game board.
  */
 public class Board {
-
+    private static final int HEIGHT = 650;
+    private static final int WIDTH = 650;
     /**
      * Returns the height of the board.
      * @return The height of the board in pixels.
      */
     public static int getHeightBoard() {
-        return 650;
+        return HEIGHT;
     }
 
     /**
@@ -16,6 +17,6 @@ public class Board {
      * @return The width of the board in pixels.
      */
     public static int getWidthBoard() {
-        return 650;
+        return WIDTH;
     }
 }

@@ -34,20 +34,6 @@ public class AbstractArtDrawing {
             drawLine(lines[i], l);
         }
 
-        // Draw blue circles at the midpoints of the lines.
-        for (int i = 0; i < 10; i++) {
-            l.setColor(Color.BLUE);
-            l.fillCircle((int) lines[i].middle().getX(), (int) lines[i].middle().getY(), 3);
-
-            // Check for intersections with other lines and draw red circles at intersections.
-            for (int j = 0; j < 10; j++) {
-                l.setColor(Color.RED);
-                if (lines[i].intersectionWith(lines[j]) != null) {
-                    l.fillCircle((int) lines[i].intersectionWith(lines[j]).getX(),
-                            (int) lines[i].intersectionWith(lines[j]).getY(), 3);
-                }
-            }
-        }
 
         // Draw green triangles for intersecting triplets of lines.
         for (int i = 0; i < 8; i++) {
@@ -68,6 +54,20 @@ public class AbstractArtDrawing {
                         drawLine(line2, l);
                         drawLine(line3, l);
                     }
+                }
+            }
+        }
+        // Draw blue circles at the midpoints of the lines.
+        for (int i = 0; i < 9; i++) {
+            l.setColor(Color.BLUE);
+            l.fillCircle((int) lines[i].middle().getX(), (int) lines[i].middle().getY(), 3);
+
+            // Check for intersections with other lines and draw red circles at intersections.
+            for (int j = i + 1; j < 10; j++) {
+                l.setColor(Color.RED);
+                if (lines[i].intersectionWith(lines[j]) != null) {
+                    l.fillCircle((int) lines[i].intersectionWith(lines[j]).getX(),
+                            (int) lines[i].intersectionWith(lines[j]).getY(), 3);
                 }
             }
         }

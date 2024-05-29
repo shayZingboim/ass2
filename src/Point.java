@@ -35,7 +35,7 @@ public class Point {
      * @return true if the points are equal, false otherwise.
      */
     public boolean equals(Point other) {
-        return Math.abs(this.x - other.x) < EPSILON && Math.abs(this.y - other.y) < EPSILON;
+        return (Math.abs(this.x - other.x) < EPSILON && Math.abs(this.y - other.y) < EPSILON);
     }
 
     /**
