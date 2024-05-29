@@ -33,7 +33,8 @@ public class MultipleFramesBouncingBallsAnimation {
             }
 
             // Validate ball radius
-            if (radius <= 0 || radius > Math.min(Board.getHeightBoard(), Board.getWidthBoard())) {
+            if (radius <= 0 || radius > Math.min(Board.getHeightBoard(), Board.getWidthBoard())
+                    || radius > 200) {
                 System.out.println("Invalid argument: " + args[i]);
                 return;
             }
@@ -83,6 +84,9 @@ public class MultipleFramesBouncingBallsAnimation {
             rec2.drawRectangle(d);
             // Move and draw each ball.
             for (Ball ball : balls) {
+                for (int i = 0; i < balls.length; i++) {
+                    ball.moveBetweenLimit(rec1);
+                }
                 ball.moveOneStep();
                 ball.drawOn(d);
             }

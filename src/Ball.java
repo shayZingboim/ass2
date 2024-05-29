@@ -1,4 +1,5 @@
 import biuoop.DrawSurface;
+
 import java.awt.Color;
 
 /**
@@ -115,4 +116,57 @@ public class Ball {
         // Update the center of the ball according to the velocity
         this.center = this.getVelocity().applyToPoint(this.center);
     }
+
+    public void moveBetweenLimit(Rectangle rectangle1) {
+        Line[] lines1 = rectangle1.frameToLine();
+        Line[] lines2 = new Line[lines1.length];
+        lines2[0] = new Line(lines1[0].start().getX() - this.getSize(), lines1[0].start().getY() - this.getSize(),
+                lines1[0].end().getX() + this.getSize(), lines1[0].end().getY() - this.getSize());
+        lines2[1] = new Line(lines1[1].start().getX() - this.getSize(), lines1[1].start().getY() + this.getSize(),
+                lines1[1].end().getX() - this.getSize(), lines1[1].end().getY() - this.getSize());
+        lines2[2] = new Line(lines1[2].start().getX() - this.getSize(), lines1[2].start().getY() + this.getSize(),
+                lines1[2].end().getX() + this.getSize(), lines1[2].end().getY() + this.getSize());
+        lines2[3] = new Line(lines1[3].start().getX() + this.getSize(), lines1[3].start().getY() + this.getSize(),
+                lines1[3].end().getX() + this.getSize(), lines1[3].end().getY() - this.getSize());
+        double numDx = this.velocity.getDx();
+        double numDy = this.velocity.getDy();
+        Line checkLine;
+        if (numDx > 0 && numDy > 0) {
+            checkLine = new Line(this.getX(), this.getY(),
+                    this.getX() + this.getSize() + this.velocity.getDx(),
+                    this.getY() + this.getSize() + this.velocity.getDy());
+        } else if (numDx > 0 && numDy < 0) {
+            checkLine = new Line(this.getX(), this.getY(),
+                    this.getX() + this.getSize() + this.velocity.getDx(),
+                    this.getY() - this.getSize() + this.velocity.getDy());
+        } else if (numDx < 0 && numDy > 0) {
+            checkLine = new Line(this.getX(), this.getY(),
+                    this.getX() - this.getSize() + this.velocity.getDx(),
+                    this.getY() + this.getSize() + this.velocity.getDy());
+        } else {
+            checkLine = new Line(this.getX(), this.getY(),
+                    this.getX() - this.getSize() + this.velocity.getDx(),
+                    this.getY() - this.getSize() + this.velocity.getDy());
+        }
+        for (int i = 0; i < lines1.length; i++) {
+            if (checkLine.isIntersecting(lines2[i])) {
+                checkLine = new Line(this.getX(), this.getY(),
+                        this.getX() + this.getSize() - this.velocity.getDx(),
+                        this.getY() + this.getSize() + this.velocity.getDy());
+                if (checkLine.isIntersecting(lines2[i])) {
+                    checkLine = new Line(this.getX(), this.getY(),
+                            this.getX() + this.getSize() + this.velocity.getDx(),
+                            this.getY() + this.getSize() - this.velocity.getDy());
+                    if (checkLine.isIntersecting(lines2[i])) {
+                        this.setVelocity((-1) * this.velocity.getDx(), (-1) * this.velocity.getDy());
+                    } else this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+
+                } else {
+                    this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+                }
+            }
+        }
+    }
+
+
 }

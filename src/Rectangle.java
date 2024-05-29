@@ -29,10 +29,19 @@ public class Rectangle {
         this.color = color;
     }
 
+    public Line[] frameToLine() {
+        Line[] lines = new Line[4];
+        lines[0] = new Line(x, y, x + width, y);
+        lines[1] = new Line(x, y, x, y + height);
+        lines[2] = new Line(x, y + height, x + width, y + height);
+        lines[3] = new Line(x + width, y + height, x + width, y);
+        return lines;
+    }
+
     /**
      * Draws a rectangle on the given DrawSurface with specified position, width, height, and color.
      *
-     * @param d      the DrawSurface to draw on.
+     * @param d the DrawSurface to draw on.
      */
     public void drawRectangle(DrawSurface d) {
         d.setColor(color);                           // Set the drawing color to the specified color
