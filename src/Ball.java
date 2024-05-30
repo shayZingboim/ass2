@@ -10,6 +10,7 @@ public class Ball {
     private int radius;
     private Color color;
     private Velocity velocity;
+    public static final double EPSILON = 0.00000001;
 
     /**
      * Constructor to create a new ball with a specified center, radius, and color.
@@ -117,56 +118,88 @@ public class Ball {
         this.center = this.getVelocity().applyToPoint(this.center);
     }
 
-    public void moveBetweenLimit(Rectangle rectangle1) {
-        Line[] lines1 = rectangle1.frameToLine();
-        Line[] lines2 = new Line[lines1.length];
-        lines2[0] = new Line(lines1[0].start().getX() - this.getSize(), lines1[0].start().getY() - this.getSize(),
-                lines1[0].end().getX() + this.getSize(), lines1[0].end().getY() - this.getSize());
-        lines2[1] = new Line(lines1[1].start().getX() - this.getSize(), lines1[1].start().getY() + this.getSize(),
-                lines1[1].end().getX() - this.getSize(), lines1[1].end().getY() - this.getSize());
-        lines2[2] = new Line(lines1[2].start().getX() - this.getSize(), lines1[2].start().getY() + this.getSize(),
-                lines1[2].end().getX() + this.getSize(), lines1[2].end().getY() + this.getSize());
-        lines2[3] = new Line(lines1[3].start().getX() + this.getSize(), lines1[3].start().getY() + this.getSize(),
-                lines1[3].end().getX() + this.getSize(), lines1[3].end().getY() - this.getSize());
-        double numDx = this.velocity.getDx();
-        double numDy = this.velocity.getDy();
-        Line checkLine;
-        if (numDx > 0 && numDy > 0) {
-            checkLine = new Line(this.getX(), this.getY(),
-                    this.getX() + this.getSize() + this.velocity.getDx(),
-                    this.getY() + this.getSize() + this.velocity.getDy());
-        } else if (numDx > 0 && numDy < 0) {
-            checkLine = new Line(this.getX(), this.getY(),
-                    this.getX() + this.getSize() + this.velocity.getDx(),
-                    this.getY() - this.getSize() + this.velocity.getDy());
-        } else if (numDx < 0 && numDy > 0) {
-            checkLine = new Line(this.getX(), this.getY(),
-                    this.getX() - this.getSize() + this.velocity.getDx(),
-                    this.getY() + this.getSize() + this.velocity.getDy());
-        } else {
-            checkLine = new Line(this.getX(), this.getY(),
-                    this.getX() - this.getSize() + this.velocity.getDx(),
-                    this.getY() - this.getSize() + this.velocity.getDy());
+    public void moveBetweenLines(Rectangle rec) {
+        Line[] lines = rec.frameToLine();
+        int[] intersectFlags = {0, 0, 0, 0};
+        int radX = this.radius;
+        int radY = this.radius;
+        if (this.velocity.getDx() < 0) {
+            radX = radX * (-1);
         }
-        for (int i = 0; i < lines1.length; i++) {
-            if (checkLine.isIntersecting(lines2[i])) {
-                checkLine = new Line(this.getX(), this.getY(),
-                        this.getX() + this.getSize() - this.velocity.getDx(),
-                        this.getY() + this.getSize() + this.velocity.getDy());
-                if (checkLine.isIntersecting(lines2[i])) {
-                    checkLine = new Line(this.getX(), this.getY(),
-                            this.getX() + this.getSize() + this.velocity.getDx(),
-                            this.getY() + this.getSize() - this.velocity.getDy());
-                    if (checkLine.isIntersecting(lines2[i])) {
-                        this.setVelocity((-1) * this.velocity.getDx(), (-1) * this.velocity.getDy());
-                    } else this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
-
+        if (this.velocity.getDy() < 0) {
+            radY = radY * (-1);
+        }
+        Point nextPoint = new Point(this.getX() + this.velocity.getDx() + radX,
+                this.getY() + this.velocity.getDy() + radY);
+        Line checkline = new Line(this.getX(), this.getY(), nextPoint.getX(), nextPoint.getY());
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].isIntersecting(checkline)) {
+                intersectFlags[i] = 1;
+                if (i % 2 == 0) {
+                    this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
                 } else {
                     this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
                 }
             }
         }
+        if (intersectFlags[0] + intersectFlags[1] + intersectFlags[2] + intersectFlags[3] == 2) {
+            int flag1 = -1;
+            int flag2 = -1;
+            for (int i = 0; i < lines.length; i++) {
+                if (intersectFlags[i] == 1) {
+                    if (flag1 == -1) {
+                        flag1 = i;
+                    } else
+                        flag2 = i;
+                }
+            }
+            Point firsIntersect = checkline.intersectionWith(lines[flag1]);
+            double firstDistance = firsIntersect.distance(this.center);
+            Point secondIntersect = checkline.intersectionWith(lines[flag2]);
+            double secondDistance = secondIntersect.distance(this.center);
+            if (firstDistance > secondDistance + EPSILON) {
+                if (flag1 % 2 == 0) {
+                    this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+                } else {
+                    this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+                }
+            } else {
+                if (flag2 % 2 == 0) {
+                    this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+                } else {
+                    this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+                }
+            }
+        }
+        Point[] recVertex = rec.frameToPoint();
+        Point newCenter = new Point(center.getX() + this.velocity.getDx(), center.getY() + this.velocity.getDy());
+        if (newCenter.distance(recVertex[0]) - this.radius < EPSILON) {
+            if (this.getX() < recVertex[0].getX()) {
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            } else {
+                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+            }
+        }
+        if (newCenter.distance(recVertex[1]) - this.radius < EPSILON) {
+            if (this.getX() < recVertex[1].getX()) {
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            } else {
+                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+            }
+        }
+        if (newCenter.distance(recVertex[2]) - this.radius < EPSILON) {
+            if (this.getX() < recVertex[2].getX()) {
+                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+            } else {
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            }
+        }
+        if (newCenter.distance(recVertex[3]) - this.radius < EPSILON) {
+            if (this.getX() < recVertex[3].getX()) {
+                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+            } else {
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            }
+        }
     }
-
-
 }

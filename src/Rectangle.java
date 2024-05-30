@@ -38,6 +38,14 @@ public class Rectangle {
         return lines;
     }
 
+    public Point[] frameToPoint() {
+        Point[] points = new Point[4];
+        points[0] = new Point(x, y);
+        points[1] = new Point(x, y + height);
+        points[2] = new Point(x + width, y + height);
+        points[3] = new Point(x + width, y);
+        return points;
+    }
     /**
      * Draws a rectangle on the given DrawSurface with specified position, width, height, and color.
      *

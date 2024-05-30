@@ -61,7 +61,6 @@ public class MultipleFramesBouncingBallsAnimation {
                         && balls[i].getY() - radius < 500 && balls[i].getY() + radius > 50));
             }
         }
-
         // Draw and animate the balls within frames.
         drawBalls(balls, rec1, rec2);
     }
@@ -79,18 +78,17 @@ public class MultipleFramesBouncingBallsAnimation {
         while (true) {
             DrawSurface d = gui.getDrawSurface();
 
-            // Draw frame rectangles.
+            // Draw grey rectangle.
             rec1.drawRectangle(d);
-            rec2.drawRectangle(d);
             // Move and draw each ball.
             for (Ball ball : balls) {
-                for (int i = 0; i < balls.length; i++) {
-                    ball.moveBetweenLimit(rec1);
-                }
+                ball.moveBetweenLines(rec1);
+                ball.moveBetweenLines(rec2);
                 ball.moveOneStep();
                 ball.drawOn(d);
             }
-
+            //Draw yellow rectangle.
+            rec2.drawRectangle(d);
             // Show the surface on the GUI.
             gui.show(d);
 
