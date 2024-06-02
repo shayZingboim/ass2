@@ -10,6 +10,7 @@ public class Ball {
     private int radius;
     private Color color;
     private Velocity velocity;
+    private int flag = 0;
     public static final double EPSILON = 0.00000001;
 
     /**
@@ -106,17 +107,13 @@ public class Ball {
     public void moveOneStep() {
         // Check for collision with the left or right walls
         if (this.center.getX() + this.radius + this.velocity.getDx() > Board.getWidthBoard()) {
-            if (this.velocity.getDx() > 0) {
-                this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
-                        this.center.getY()));
-                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
-            }
+            this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
+                    this.center.getY()));
+            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
         }
         if (this.center.getX() - this.radius + this.velocity.getDx() < 0) {
-            if (this.velocity.getDx() < 0) {
-                this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
-                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
-            }
+            this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
+            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
         }
         // Check for collision with the top or bottom walls
         if (this.center.getY() + this.radius + this.velocity.getDy() > Board.getHeightBoard()) {
@@ -148,10 +145,26 @@ public class Ball {
         Line checkline = new Line(this.getX(), this.getY(), nextPoint.getX(), nextPoint.getY());
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].isIntersecting(checkline)) {
+                Point movePoint = lines[i].intersectionWith(checkline);
                 intersectFlags[i] = 1;
                 if (i % 2 == 0) {
+                    if (this.velocity.getDy() < 0) {
+                        this.center = this.getVelocity().applyToPoint(new Point(this.getX(),
+                                movePoint.getY() + this.radius));
+                    } else if (this.velocity.getDy() > 0) {
+                        this.center = this.getVelocity().applyToPoint(new Point(this.getX(),
+                                movePoint.getY() - this.radius));
+                    }
                     this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
-                } else {
+                }
+                else {
+                    if (this.velocity.getDx() > 0) {
+                        this.center = this.getVelocity().applyToPoint(new Point(movePoint.getX() - this.radius,
+                                this.getY()));
+                    } else if (this.velocity.getDx() < 0) {
+                        this.center = this.getVelocity().applyToPoint(new Point(movePoint.getX() + radius,
+                                this.getY()));
+                    }
                     this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
                 }
             }
