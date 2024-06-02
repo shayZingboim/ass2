@@ -22,7 +22,10 @@ public class MultipleFramesBouncingBallsAnimation {
         int radius;
         int halfBall = args.length / 2;
         Random rand = new Random();
-
+        if (args.length == 0) {
+            System.out.println("Invalid arguments, no arguments given");
+            return;
+        }
         // Create balls with specified radius
         for (int i = 0; i < args.length; i++) {
             try {
@@ -34,7 +37,7 @@ public class MultipleFramesBouncingBallsAnimation {
 
             // Validate ball radius
             if (radius <= 0 || radius > Math.min(Board.getHeightBoard(), Board.getWidthBoard())
-                    || radius >= (Board.getWidthBoard()  - 500) / 2)  {
+                    || radius >= (Board.getWidthBoard() - 500) / 2) {
                 System.out.println("Invalid argument: " + args[i]);
                 return;
             }
@@ -43,17 +46,19 @@ public class MultipleFramesBouncingBallsAnimation {
             if (i <= (halfBall - 1)) {
                 // Ensure balls are placed within the grey rectangle.
                 do {
+                    Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - 2 * radius - 50) + (radius + 50),
-                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, Color.BLACK);
-                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 4, (100 - radius) / 4));
+                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, color);
+                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 5, (100 - radius) / 5));
                     balls[i].setVelocity(vel);
                 } while (balls[i].getX() + radius > 450 && balls[i].getY() + radius > 450);
             } else {
                 // Ensure balls are placed outside the rectangles.
                 do {
+                    Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(Board.getWidthBoard() - 2 * radius) + radius,
-                            rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, Color.BLACK);
-                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 4, (100 - radius) / 4));
+                            rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, color);
+                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 5, (100 - radius) / 5));
                     balls[i].setVelocity(vel);
                 } while ((balls[i].getX() - radius < 600 && balls[i].getX() + radius > 450
                         && balls[i].getY() + radius > 450 && balls[i].getY() - radius < 600)
@@ -95,5 +100,9 @@ public class MultipleFramesBouncingBallsAnimation {
             // Pause for 50 milliseconds before the next iteration.
             sleeper.sleepFor(50);
         }
+    }
+    public static Color randColor() {
+        Random rand = new Random();
+        return new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
     }
 }

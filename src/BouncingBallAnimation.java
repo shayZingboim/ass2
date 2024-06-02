@@ -14,6 +14,10 @@ public class BouncingBallAnimation {
      * @param args the command line arguments: initial x position, initial y position, dx, dy.
      */
     public static void main(String[] args) {
+        if (args.length != 4) {
+            System.out.println("Invalid number of arguments");
+            return;
+        }
         int[] newArgs = new int[args.length];
         // Parse command line arguments to integers
         for (int i = 0; i < args.length; i++) {

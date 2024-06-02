@@ -18,7 +18,10 @@ public class MultipleBouncingBallsAnimation {
         Ball[] balls = new Ball[args.length];
         int radius;
         Random rand = new Random();
-
+        if (args.length == 0) {
+            System.out.println("Invalid arguments, no arguments given");
+            return;
+        }
         // Create balls with specified radius
         for (int i = 0; i < args.length; i++) {
             try {

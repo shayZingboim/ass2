@@ -106,13 +106,17 @@ public class Ball {
     public void moveOneStep() {
         // Check for collision with the left or right walls
         if (this.center.getX() + this.radius + this.velocity.getDx() > Board.getWidthBoard()) {
-            this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
-                    this.center.getY()));
-            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            if (this.velocity.getDx() > 0) {
+                this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
+                        this.center.getY()));
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            }
         }
         if (this.center.getX() - this.radius + this.velocity.getDx() < 0) {
-            this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
-            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            if (this.velocity.getDx() < 0) {
+                this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
+                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+            }
         }
         // Check for collision with the top or bottom walls
         if (this.center.getY() + this.radius + this.velocity.getDy() > Board.getHeightBoard()) {
