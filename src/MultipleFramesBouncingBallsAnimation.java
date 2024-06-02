@@ -49,7 +49,7 @@ public class MultipleFramesBouncingBallsAnimation {
                     Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - 2 * radius - 50) + (radius + 50),
                             rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, color);
-                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 5, (100 - radius) / 5));
+                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 6, (100 - radius) / 6));
                     balls[i].setVelocity(vel);
                 } while (balls[i].getX() + radius > 450 && balls[i].getY() + radius > 450);
             } else {
@@ -58,7 +58,7 @@ public class MultipleFramesBouncingBallsAnimation {
                     Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(Board.getWidthBoard() - 2 * radius) + radius,
                             rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, color);
-                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 5, (100 - radius) / 5));
+                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 6, (100 - radius) / 6));
                     balls[i].setVelocity(vel);
                 } while ((balls[i].getX() - radius < 600 && balls[i].getX() + radius > 450
                         && balls[i].getY() + radius > 450 && balls[i].getY() - radius < 600)
@@ -101,6 +101,7 @@ public class MultipleFramesBouncingBallsAnimation {
             sleeper.sleepFor(50);
         }
     }
+
     public static Color randColor() {
         Random rand = new Random();
         return new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));

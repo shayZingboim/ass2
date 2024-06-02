@@ -88,17 +88,39 @@ public class Line {
         return this.inPoint;
     }
 
+    /**
+     * Calculates the slope of a given line.
+     * The slope is calculated as the change in y divided by the change in x. If the line is vertical
+     * (i.e., the difference in x-coordinates is negligible), the slope is considered to be positive infinity.
+     *
+     * @param line The line for which the slope is to be calculated.
+     * @return The slope of the line. If the line is vertical, returns Double.POSITIVE_INFINITY.
+     */
     public double getSlope(Line line) {
         double slope;
+        // Check if the line is vertical by comparing the x-coordinates of the start and end points
         if (Math.abs(line.start.getX() - line.end.getX()) <= EPSILON) {
+            // If the x-coordinates are effectively the same, the line is vertical
             slope = Double.POSITIVE_INFINITY;
         } else {
+            // Calculate the slope using the difference in y-coordinates divided by the difference in x-coordinates
             slope = (line.end.getY() - line.start.getY()) / (line.end.getX() - line.start.getX());
         }
         return slope;
     }
 
+    /**
+     * Calculates the y-intercept (b) of a given line using its slope.
+     * The y-intercept is calculated using the formula b = y - mx,
+     * where y and x are the coordinates of a point on the line
+     * and m is the slope of the line.
+     *
+     * @param line  The line for which the y-intercept is to be calculated.
+     * @param slope The slope of the line.
+     * @return The y-intercept of the line.
+     */
     public double getB(Line line, double slope) {
+        // Calculate the y-intercept using the formula b = y - mx
         double b = (line.start.getY() - (slope * line.start.getX()));
         return b;
     }

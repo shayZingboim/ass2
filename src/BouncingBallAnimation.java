@@ -23,6 +23,8 @@ public class BouncingBallAnimation {
         for (int i = 0; i < args.length; i++) {
             newArgs[i] = Integer.parseInt(args[i]);
         }
+        Board.setHeightBoard(200);
+        Board.setWidthBoard(200);
 
         // Check if the ball's initial position is within the valid range.
         if (newArgs[0] - 30 < 0 || newArgs[0] + 30 > Board.getWidthBoard()
