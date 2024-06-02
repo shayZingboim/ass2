@@ -105,13 +105,23 @@ public class Ball {
      */
     public void moveOneStep() {
         // Check for collision with the left or right walls
-        if (this.center.getX() + this.radius + this.velocity.getDx() > Board.getWidthBoard()
-                || this.center.getX() - this.radius + this.velocity.getDx() < 0) {
+        if (this.center.getX() + this.radius + this.velocity.getDx() > Board.getWidthBoard()) {
+            this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
+                    this.center.getY()));
+            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
+        }
+        if (this.center.getX() - this.radius + this.velocity.getDx() < 0) {
+            this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
             this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());
         }
         // Check for collision with the top or bottom walls
-        if (this.center.getY() + this.radius + this.velocity.getDy() > Board.getHeightBoard()
-                || this.center.getY() - this.radius + this.velocity.getDy() < 0) {
+        if (this.center.getY() + this.radius + this.velocity.getDy() > Board.getHeightBoard()) {
+            this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(),
+                    Board.getHeightBoard() - this.radius));
+            this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
+        }
+        if (this.center.getY() - this.radius + this.velocity.getDy() < 0) {
+            this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(), this.radius));
             this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());
         }
         // Update the center of the ball according to the velocity

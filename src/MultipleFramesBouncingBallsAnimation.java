@@ -45,7 +45,7 @@ public class MultipleFramesBouncingBallsAnimation {
                 do {
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - 2 * radius - 50) + (radius + 50),
                             rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, Color.BLACK);
-                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 5, (100 - radius) / 5));
+                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 4, (100 - radius) / 4));
                     balls[i].setVelocity(vel);
                 } while (balls[i].getX() + radius > 450 && balls[i].getY() + radius > 450);
             } else {
