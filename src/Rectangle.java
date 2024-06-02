@@ -1,5 +1,4 @@
 import biuoop.DrawSurface;
-
 import java.awt.Color;
 
 /**
@@ -10,7 +9,7 @@ public class Rectangle {
     private int y;       // The y-coordinate of the top-left corner of the rectangle
     private int width;   // The width of the rectangle
     private int height;  // The height of the rectangle
-    private Color color;
+    private Color color; // The color of the rectangle
 
     /**
      * Constructor to create a new rectangle with specified position, width, and height.
@@ -29,6 +28,11 @@ public class Rectangle {
         this.color = color;
     }
 
+    /**
+     * Converts the rectangle's frame to an array of lines.
+     *
+     * @return an array of Line objects representing the sides of the rectangle.
+     */
     public Line[] frameToLine() {
         Line[] lines = new Line[4];
         lines[0] = new Line(x, y, x + width, y);
@@ -38,6 +42,11 @@ public class Rectangle {
         return lines;
     }
 
+    /**
+     * Converts the rectangle's frame to an array of points representing its vertices.
+     *
+     * @return an array of Point objects representing the vertices of the rectangle.
+     */
     public Point[] frameToPoint() {
         Point[] points = new Point[4];
         points[0] = new Point(x, y);
@@ -46,8 +55,9 @@ public class Rectangle {
         points[3] = new Point(x + width, y);
         return points;
     }
+
     /**
-     * Draws a rectangle on the given DrawSurface with specified position, width, height, and color.
+     * Draws a filled rectangle on the given DrawSurface with specified position, width, height, and color.
      *
      * @param d the DrawSurface to draw on.
      */

@@ -74,6 +74,8 @@ public class MultipleFramesBouncingBallsAnimation {
      * Draws and animates the balls within frames.
      *
      * @param balls an array of Ball objects to be animated.
+     * @param rec1  the first rectangle frame.
+     * @param rec2  the second rectangle frame.
      */
     public static void drawBalls(Ball[] balls, Rectangle rec1, Rectangle rec2) {
         GUI gui = new GUI("Bouncing Frame Balls", Board.getWidthBoard(), Board.getHeightBoard());
@@ -102,6 +104,11 @@ public class MultipleFramesBouncingBallsAnimation {
         }
     }
 
+    /**
+     * Generates a random color.
+     *
+     * @return A randomly generated Color object.
+     */
     public static Color randColor() {
         Random rand = new Random();
         return new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
