@@ -17,8 +17,9 @@ public class MultipleFramesBouncingBallsAnimation {
      */
     public static void main(String[] args) {
         Ball[] balls = new Ball[args.length];
-        Rectangle rec1 = new Rectangle(50, 50, 450, 450, Color.GRAY);
-        Rectangle rec2 = new Rectangle(450, 450, 150, 150, Color.YELLOW);
+        Rectangle rec1 = new Rectangle(0, 0, Board.getWidthBoard(), Board.getHeightBoard(), Color.white);
+        Rectangle rec2 = new Rectangle(50, 50, 450, 450, Color.GRAY);
+        Rectangle rec3 = new Rectangle(450, 450, 150, 150, Color.YELLOW);
         int radius;
         int halfBall = args.length / 2;
         Random rand = new Random();
@@ -48,8 +49,8 @@ public class MultipleFramesBouncingBallsAnimation {
                 do {
                     Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - 2 * radius - 50) + (radius + 50),
-                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, color);
-                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 6, (100 - radius) / 6));
+                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, Color.BLACK);
+                    Velocity vel = Velocity.fromAngleAndSpeed(40, Math.max(50 / 5, (100 - radius) / 5));
                     balls[i].setVelocity(vel);
                 } while (balls[i].getX() + radius > 450 && balls[i].getY() + radius > 450);
             } else {
@@ -57,8 +58,8 @@ public class MultipleFramesBouncingBallsAnimation {
                 do {
                     Color color = randColor();
                     balls[i] = new Ball(new Point(rand.nextDouble(Board.getWidthBoard() - 2 * radius) + radius,
-                            rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, color);
-                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 6, (100 - radius) / 6));
+                            rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, Color.BLUE);
+                    Velocity vel = Velocity.fromAngleAndSpeed(38, Math.max(50 / 5, (100 - radius) / 5));
                     balls[i].setVelocity(vel);
                 } while ((balls[i].getX() - radius < 600 && balls[i].getX() + radius > 450
                         && balls[i].getY() + radius > 450 && balls[i].getY() - radius < 600)
@@ -67,17 +68,18 @@ public class MultipleFramesBouncingBallsAnimation {
             }
         }
         // Draw and animate the balls within frames.
-        drawBalls(balls, rec1, rec2);
+        drawBalls(balls, rec1, rec2, rec3);
     }
 
     /**
      * Draws and animates the balls within frames.
      *
      * @param balls an array of Ball objects to be animated.
-     * @param rec1  the first rectangle frame.
-     * @param rec2  the second rectangle frame.
+     * @param rec1  the board.
+     * @param rec2  the first rectangle frame.
+     * @param rec3  the second rectangle frame.
      */
-    public static void drawBalls(Ball[] balls, Rectangle rec1, Rectangle rec2) {
+    public static void drawBalls(Ball[] balls, Rectangle rec1, Rectangle rec2, Rectangle rec3) {
         GUI gui = new GUI("Bouncing Frame Balls", Board.getWidthBoard(), Board.getHeightBoard());
         Sleeper sleeper = new Sleeper();
 
@@ -86,16 +88,21 @@ public class MultipleFramesBouncingBallsAnimation {
             DrawSurface d = gui.getDrawSurface();
 
             // Draw grey rectangle.
-            rec1.drawRectangle(d);
+            rec2.drawRectangle(d);
             // Move and draw each ball.
-            for (Ball ball : balls) {
-                ball.moveBetweenLines(rec1);
-                ball.moveBetweenLines(rec2);
-                ball.moveOneStep();
-                ball.drawOn(d);
+            for (int i = 0; i < balls.length; i++) {
+                if (i < balls.length / 2) {
+                    balls[i].moveBetweenLine(rec2, true);
+                } else {
+                    balls[i].moveBetweenLine(rec2, false);
+                    balls[i].moveBetweenLine(rec3, false);
+                    balls[i].moveBetweenLine(rec1, true);
+                }
+                //ball.moveOneStep();
+                balls[i].drawOn(d);
             }
             //Draw yellow rectangle.
-            rec2.drawRectangle(d);
+            rec3.drawRectangle(d);
             // Show the surface on the GUI.
             gui.show(d);
 

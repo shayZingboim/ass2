@@ -1,4 +1,5 @@
 import biuoop.DrawSurface;
+
 import java.awt.Color;
 
 /**
@@ -27,6 +28,28 @@ public class Rectangle {
         this.height = height;
         this.color = color;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+
 
     /**
      * Converts the rectangle's frame to an array of lines.
