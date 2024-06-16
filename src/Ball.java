@@ -10,6 +10,7 @@ public class Ball {
     private int radius;
     private Color color;
     private Velocity velocity;
+    private int left, right, top, bottom;
     public static final double EPSILON = 0.00000001;
 
     /**
@@ -24,6 +25,10 @@ public class Ball {
         this.radius = r;
         this.color = color;
         this.velocity = new Velocity(0, 0);  // Initialize velocity to zero
+        this.left = 0;
+        this.right = 0;
+        this.top = 0;
+        this.bottom = 0;
     }
 
     /**
@@ -51,6 +56,13 @@ public class Ball {
      */
     public int getSize() {
         return this.radius;
+    }
+
+    public void setBounds(int x, int y, int z, int s) {
+        this.left = x;
+        this.right = y;
+        this.top = z;
+        this.bottom = s;
     }
 
     /**
@@ -100,143 +112,38 @@ public class Ball {
         return this.velocity;
     }
 
-    /**
-     * Moves the ball one step according to its velocity, and bounces off walls if it hits them.
-     */
     public void moveOneStep() {
-        // Check for collision with the left or right walls
-        if (this.center.getX() + this.radius + this.velocity.getDx() > Board.getWidthBoard()) {
-            // Hit the right wall
-            //     this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
-            //           this.center.getY()));
-            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy()); // Reverse x velocity
+        if ((this.getX() - this.radius <= left) || (this.getX() + this.radius >= right)) {
+            setVelocity(-this.velocity.getDx(), this.velocity.getDy());
         }
-        if (this.center.getX() - this.radius + this.velocity.getDx() < 0) {
-            // Hit the left wall
-            // this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
-            this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy()); // Reverse x velocity
+        if ((this.getY() - this.radius <= top) || (this.getY() + this.radius >= bottom)) {
+            setVelocity(this.velocity.getDx(), -this.velocity.getDy());
         }
-        // Check for collision with the top or bottom walls
-        if (this.center.getY() + this.radius + this.velocity.getDy() > Board.getHeightBoard()) {
-            // Hit the bottom wall
-            //this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(),
-            //      Board.getHeightBoard() - this.radius));
-            this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy()); // Reverse y velocity
-        }
-        if (this.center.getY() - this.radius + this.velocity.getDy() < 0) {
-            // Hit the top wall
-            //this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(), this.radius));
-            this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy()); // Reverse y velocity
-        }
-        // Update the center of the ball according to the velocity
-        this.center = this.getVelocity().applyToPoint(this.center);
+        this.center = this.velocity.applyToPoint(this.center);
     }
 
-    public void moveBetweenLine(Rectangle rec, boolean in) {
-        if (in) {
-            // Check for collision with the left or right walls
-            if (this.center.getX() + this.radius + this.velocity.getDx() > (rec.getX() + rec.getWidth())) {
-                // Hit the right wall
-                //     this.center = this.getVelocity().applyToPoint(new Point(Board.getWidthBoard() - this.radius,
-                //           this.center.getY()));
-                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy()); // Reverse x velocity
-            }
-            if (this.center.getX() - this.radius + this.velocity.getDx() < rec.getX()) {
-                // Hit the left wall
-                // this.center = this.getVelocity().applyToPoint(new Point(this.radius, this.center.getY()));
-                this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy()); // Reverse x velocity
-            }
-            // Check for collision with the top or bottom walls
-            if (this.center.getY() + this.radius + this.velocity.getDy() > (rec.getY() + rec.getHeight())) {
-                // Hit the bottom wall
-                //this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(),
-                //      Board.getHeightBoard() - this.radius));
-                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy()); // Reverse y velocity
-            }
-            if (this.center.getY() - this.radius + this.velocity.getDy() < rec.getY()) {
-                // Hit the top wall
-                //this.center = this.getVelocity().applyToPoint(new Point(this.center.getX(), this.radius));
-                this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy()); // Reverse y velocity
-            }
-            // Update the center of the ball according to the velocity
-            this.center = this.getVelocity().applyToPoint(this.center);
-
-        } else {
-            // Convert rectangle sides to lines
-            Line[] lines = rec.frameToLine();
-            int[] intersectFlags = {0, 0, 0, 0};  // Flags to track intersections with the lines
-            int radX = this.radius;
-            int radY = this.radius;
-
-            // Adjust direction of radius based on velocity
-            if (this.velocity.getDx() < 0) {
-                radX = radX * (-1);
-            }
-            if (this.velocity.getDy() < 0) {
-                radY = radY * (-1);
-            }
-
-            // Predict the next position of the ball
-            Point nextPoint = new Point(this.getX() + this.velocity.getDx() + radX,
-                    this.getY() + this.velocity.getDy() + radY);
-            Line checkline = new Line(this.getX(), this.getY(), nextPoint.getX(), nextPoint.getY());
-            // Check for intersection with each line of the rectangle
-            for (int i = 0; i < lines.length; i++) {
-                if (lines[i].isIntersecting(checkline)) {
-                    double step = this.center.distance(lines[i].intersectionWith(checkline));
-                    intersectFlags[i] = 1;
-                    if (i % 2 == 0) {
-                        for (double j = 0; j < step; j++) {
-                            if ((this.center.distance(lines[i].intersectionWith(checkline)) - EPSILON) > this.radius) {
-                                this.center = new Point(this.center.getX() + (1 / step) * velocity.getDx(),
-                                        this.center.getY() + (1 / step) * velocity.getDy());
-                            }
-                        }
-                        this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());  // Reverse y velocity
-                    } else {
-                        for (double j = 0; j < step; j++) {
-                            if ((this.center.distance(lines[i].intersectionWith(checkline)) - EPSILON) > this.radius) {
-                                this.center = new Point(this.center.getX() + (1 / step) * velocity.getDx(),
-                                        this.center.getY() + (1 / step) * velocity.getDy());
-                            }
-                        }
-                        this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());  // Reverse x velocity
-                    }
-                }
-            }
-            // If the ball intersects with two lines (corner case)
-            if (intersectFlags[0] + intersectFlags[1] + intersectFlags[2] + intersectFlags[3] == 2) {
-                int flag1 = -1;
-                int flag2 = -1;
-                for (int i = 0; i < lines.length; i++) {
-                    if (intersectFlags[i] == 1) {
-                        if (flag1 == -1) {
-                            flag1 = i;
-                        } else {
-                            flag2 = i;
-                        }
-                    }
-                }
-
-                Point firstIntersect = checkline.intersectionWith(lines[flag1]);
-                double firstDistance = firstIntersect.distance(this.center);
-                Point secondIntersect = checkline.intersectionWith(lines[flag2]);
-                double secondDistance = secondIntersect.distance(this.center);
-
-                if (firstDistance > secondDistance + EPSILON) {
-                    if (flag1 % 2 == 0) {
-                        this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());  // Reverse y velocity
-                    } else {
-                        this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());  // Reverse x velocity
-                    }
-                } else {
-                    if (flag2 % 2 == 0) {
-                        this.setVelocity(this.velocity.getDx(), (-1) * this.velocity.getDy());  // Reverse y velocity
-                    } else {
-                        this.setVelocity((-1) * this.velocity.getDx(), this.velocity.getDy());  // Reverse x velocity
-                    }
-                }
-            }
+    public Point closestIntersection(Rectangle rec) {
+        Point startOfRec = new Point(rec.getX(), rec.getY());
+        Point endOfRec = new Point(rec.getX() + rec.getWidth(), rec.getY() + rec.getHeight());
+        Point closest = new Point(this.getX(), this.getY());
+        if (closest.getX() < startOfRec.getX()) {
+            closest.setX(startOfRec.getX());
+        } else if (closest.getX() > endOfRec.getX()) {
+            closest.setX(endOfRec.getX());
         }
+        if (closest.getY() < startOfRec.getY()) {
+            closest.setY(startOfRec.getY());
+        } else if (closest.getY() > endOfRec.getY()) {
+            closest.setY(endOfRec.getY());
+        }
+        return closest;
+    }
+
+    public boolean isIntersectingRec(Rectangle rec) {
+        Line checkLine = new Line(this.center, closestIntersection(rec));
+        if (checkLine.length() <= this.radius) {
+            return true;
+        }
+        return false;
     }
 }

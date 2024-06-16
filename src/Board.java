@@ -2,8 +2,8 @@
  * Represents the dimensions of a game board.
  */
 public class Board {
-    private static int height = 650; // Default height
-    private static int width = 650; // Default width
+    private static int height = 600; // Default height
+    private static int width = 800; // Default width
 
     /**
      * Returns the height of the board.

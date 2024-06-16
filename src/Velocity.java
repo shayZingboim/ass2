@@ -59,4 +59,14 @@ public class Velocity {
     public double getDy() {
         return dy;
     }
+
+    public static double mapSpeed(double radius, double min, double max, double speedMin, double speedMax) {
+        if (radius < min) {
+            return speedMax;
+        }
+        if (radius > max) {
+            return speedMin;
+        }
+        return speedMax + (radius - min) * (speedMin - speedMax) / (max - min);
+    }
 }

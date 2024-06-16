@@ -49,36 +49,6 @@ public class Rectangle {
         return color;
     }
 
-
-
-    /**
-     * Converts the rectangle's frame to an array of lines.
-     *
-     * @return an array of Line objects representing the sides of the rectangle.
-     */
-    public Line[] frameToLine() {
-        Line[] lines = new Line[4];
-        lines[0] = new Line(x, y, x + width, y);
-        lines[1] = new Line(x, y, x, y + height);
-        lines[2] = new Line(x, y + height, x + width, y + height);
-        lines[3] = new Line(x + width, y + height, x + width, y);
-        return lines;
-    }
-
-    /**
-     * Converts the rectangle's frame to an array of points representing its vertices.
-     *
-     * @return an array of Point objects representing the vertices of the rectangle.
-     */
-    public Point[] frameToPoint() {
-        Point[] points = new Point[4];
-        points[0] = new Point(x, y);
-        points[1] = new Point(x, y + height);
-        points[2] = new Point(x + width, y + height);
-        points[3] = new Point(x + width, y);
-        return points;
-    }
-
     /**
      * Draws a filled rectangle on the given DrawSurface with specified position, width, height, and color.
      *
