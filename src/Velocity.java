@@ -60,13 +60,26 @@ public class Velocity {
         return dy;
     }
 
+    /**
+     * Maps a speed value based on the radius of an object within a specified range.
+     *
+     * @param radius   the radius of the object.
+     * @param min      the minimum radius for mapping speed.
+     * @param max      the maximum radius for mapping speed.
+     * @param speedMin the minimum speed value to map to.
+     * @param speedMax the maximum speed value to map to.
+     * @return the mapped speed value based on the radius.
+     */
     public static double mapSpeed(double radius, double min, double max, double speedMin, double speedMax) {
+        // If radius is less than the minimum, return the maximum speed
         if (radius < min) {
             return speedMax;
         }
+        // If radius is greater than the maximum, return the minimum speed
         if (radius > max) {
             return speedMin;
         }
+        // Calculate the mapped speed based on linear interpolation between speedMin and speedMax
         return speedMax + (radius - min) * (speedMin - speedMax) / (max - min);
     }
 }

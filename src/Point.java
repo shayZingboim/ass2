@@ -56,10 +56,21 @@ public class Point {
         return this.y;
     }
 
+    /**
+     * Sets the x-coordinate of the point.
+     *
+     * @param x the new x-coordinate to set.
+     */
     public void setX(double x) {
-        this.x = x;
+        this.x = x; // Set the x-coordinate to the provided value
     }
+
+    /**
+     * Sets the y-coordinate of the point.
+     *
+     * @param y the new y-coordinate to set.
+     */
     public void setY(double y) {
-        this.y = y;
+        this.y = y; // Set the y-coordinate to the provided value
     }
 }

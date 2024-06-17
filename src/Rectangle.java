@@ -13,7 +13,7 @@ public class Rectangle {
     private Color color; // The color of the rectangle
 
     /**
-     * Constructor to create a new rectangle with specified position, width, and height.
+     * Constructor to create a new rectangle with specified position, width, height, and color.
      *
      * @param x      the x-coordinate of the top-left corner.
      * @param y      the y-coordinate of the top-left corner.
@@ -29,22 +29,47 @@ public class Rectangle {
         this.color = color;
     }
 
+    /**
+     * Gets the x-coordinate of the top-left corner of this rectangle.
+     *
+     * @return the x-coordinate.
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Gets the y-coordinate of the top-left corner of this rectangle.
+     *
+     * @return the y-coordinate.
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Gets the width of this rectangle.
+     *
+     * @return the width.
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gets the height of this rectangle.
+     *
+     * @return the height.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gets the color of this rectangle.
+     *
+     * @return the color.
+     */
     public Color getColor() {
         return color;
     }
@@ -56,6 +81,6 @@ public class Rectangle {
      */
     public void drawRectangle(DrawSurface d) {
         d.setColor(color);                           // Set the drawing color to the specified color
-        d.fillRectangle(x, y, width, height);        // Draw the filled rectangle on the DrawSurface
+        d.fillRectangle(x, y, width, height);         // Draw the filled rectangle on the DrawSurface
     }
 }

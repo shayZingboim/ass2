@@ -1,6 +1,7 @@
 import biuoop.GUI;
 import biuoop.DrawSurface;
 import biuoop.Sleeper;
+
 import java.awt.Color;
 
 /**
@@ -27,8 +28,8 @@ public class BouncingBallAnimation {
         Board.setWidthBoard(200);
 
         // Check if the ball's initial position is within the valid range.
-        if (newArgs[0] - 30 < 0 || newArgs[0] + 30 > Board.getWidthBoard()
-                || newArgs[1] - 30 < 0 || newArgs[1] + 30 > Board.getHeightBoard()) {
+        if (newArgs[0] - 30 <= 0 || newArgs[0] + 30 >= Board.getWidthBoard()
+                || newArgs[1] - 30 <= 0 || newArgs[1] + 30 >= Board.getHeightBoard()) {
             System.out.println("Invalid arguments");
             return;
         }
@@ -47,16 +48,18 @@ public class BouncingBallAnimation {
     private static void drawAnimation(Point start, double dx, double dy) {
         GUI gui = new GUI("Bouncing Ball Animation", Board.getWidthBoard(), Board.getHeightBoard());
         Sleeper sleeper = new Sleeper();
+        //Build the ball.
         Ball ball = new Ball(start, 30, Color.BLACK);
         ball.setVelocity(dx, dy);
 
         // Animation loop
         while (true) {
-            ball.moveOneStep();              // Move the ball one step
-            DrawSurface d = gui.getDrawSurface();  // Get the drawing surface
-            ball.drawOn(d);                  // Draw the ball on the surface
-            gui.show(d);                     // Show the surface on the GUI
-            sleeper.sleepFor(50);            // Wait for 50 milliseconds
+            ball.setBounds(0, Board.getWidthBoard(), 0, Board.getHeightBoard()); //Set the bounds to be the board.
+            ball.moveOneStep();              // Move the ball one step.
+            DrawSurface d = gui.getDrawSurface();  // Get the drawing surface.
+            ball.drawOn(d);                  // Draw the ball on the surface.
+            gui.show(d);                     // Show the surface on the GUI.
+            sleeper.sleepFor(50);            // Wait for 50 milliseconds.
         }
     }
 }

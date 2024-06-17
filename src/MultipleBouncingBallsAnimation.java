@@ -42,7 +42,8 @@ public class MultipleBouncingBallsAnimation {
                     rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius), radius, Color.BLACK);
 
             // Set ball velocity
-            Velocity vel = Velocity.fromAngleAndSpeed(45, Math.max(50 / 3, (100 - radius) / 3));
+            double speed = Velocity.mapSpeed(balls[i].getSize(), 2, 50, 1, 5);
+            Velocity vel = Velocity.fromAngleAndSpeed(40, speed); // Set velocity at 40 degrees
             balls[i].setVelocity(vel);
         }
 
@@ -65,6 +66,8 @@ public class MultipleBouncingBallsAnimation {
 
             // Move and draw each ball
             for (Ball ball : balls) {
+                //Set the bounds to be the board.
+                ball.setBounds(0, Board.getWidthBoard(), 0, Board.getHeightBoard());
                 ball.moveOneStep();
                 ball.drawOn(d);
             }
