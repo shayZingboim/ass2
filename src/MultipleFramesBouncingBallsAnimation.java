@@ -1,3 +1,5 @@
+//Shay Zingboim ID 208497255 Yair Kupershtock ID 322889015
+
 import biuoop.DrawSurface;
 import biuoop.GUI;
 import biuoop.Sleeper;
@@ -55,7 +57,7 @@ public class MultipleFramesBouncingBallsAnimation {
                     Color color = randColor(); // Generate random color for the ball
                     // Create ball within grey rectangle bounds
                     balls[i] = new Ball(new Point(rand.nextDouble(500 - 2 * radius - 50) + (radius + 50),
-                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, Color.BLACK);
+                            rand.nextDouble(500 - 2 * radius - 50) + (radius + 50)), radius, color);
                     // Calculate speed based on ball size and set velocity
                     double speed = Velocity.mapSpeed(balls[i].getSize(), 2, 50, 1, 5);
                     Velocity vel = Velocity.fromAngleAndSpeed(40, speed); // Set velocity at 40 degrees
@@ -68,7 +70,7 @@ public class MultipleFramesBouncingBallsAnimation {
                     // Create ball outside rectangles
                     balls[i] = new Ball(new Point(rand.nextDouble(Board.getWidthBoard() - 2 * radius)
                             + radius, rand.nextDouble(Board.getHeightBoard() - 2 * radius) + radius),
-                            radius, Color.BLUE);
+                            radius, color);
                     // Calculate speed based on ball size and set velocity
                     double speed = Velocity.mapSpeed(balls[i].getSize(), 2, 50, 1, 5);
                     Velocity vel = Velocity.fromAngleAndSpeed(38, speed); // Set velocity at 38 degrees

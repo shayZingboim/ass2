@@ -1,3 +1,5 @@
+//Shay Zingboim ID 208497255 Yair Kupershtock ID 322889015
+
 /**
  * Represents the velocity of an object, defined by its change in position (dx, dy).
  */
